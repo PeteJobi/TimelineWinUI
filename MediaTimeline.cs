@@ -23,6 +23,7 @@ namespace Timeline
         private readonly Process? ffmpegProcess;
         private string? currentPreviewsFolder;
         public const double SpaceForLines = 30;
+        private const int frameTime24Fps = 1000 / 24;
         private const double ScenePreviewPanelHeight = 70;
         private TimeSpan prevProgress;
         private double previewImageWidth;
@@ -83,7 +84,7 @@ namespace Timeline
             dispatcher.TryEnqueue(DispatcherQueuePriority.Normal,
                 () => model.IsPlaying = prevIsPlaying = sender.PlaybackState == MediaPlaybackState.Playing);
             if (sender.PlaybackState == MediaPlaybackState.Playing) await AnimateSeeker(sender);
-            else dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () => model.Progress = sender.Position);
+            else if(!CloseToEnd(sender.Position)) dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () => model.Progress = sender.Position);
         }
 
         private async void PlaybackSessionOnPositionChanged(MediaPlaybackSession sender, object args)
@@ -95,7 +96,7 @@ namespace Timeline
                 model.Progress = prevProgress = sender.Position;
                 //Debug.WriteLine($"{sender.Position} / {model.Progress}");
             });
-            await Task.Delay(480);
+            await Task.Delay(frameTime24Fps * 12);
             inPositionThrottle = false;
         }
 
@@ -139,8 +140,7 @@ namespace Timeline
 
         private async Task AnimateSeeker(MediaPlaybackSession session)
         {
-            const int frameTime24Fps = 1000 / 24;
-            while (session.PlaybackState == MediaPlaybackState.Playing)
+            while (session.PlaybackState == MediaPlaybackState.Playing && !CloseToEnd(session.Position))
             {
                 dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () =>
                 {
@@ -150,6 +150,9 @@ namespace Timeline
                 await Task.Delay(frameTime24Fps);
             }
         }
+
+        //The reason for this condition is that if the MediaPlayer.Position is set after the media finishes playing, playing again won't start from the beginning
+        private bool CloseToEnd(TimeSpan position) => model.Duration - position <= TimeSpan.FromMilliseconds(frameTime24Fps);
 
         private async Task SetUpPreviews()
         {
