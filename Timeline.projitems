@@ -11,6 +11,8 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)MediaTimeline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BaseTimeline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextBoxExtensions.Mask.Internals.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextBoxExtensions.Mask.Properties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimespanTextBox.xaml.cs">
       <DependentUpon>TimespanTextBox.xaml</DependentUpon>
     </Compile>
