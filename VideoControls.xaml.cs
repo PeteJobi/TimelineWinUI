@@ -202,7 +202,7 @@ namespace Timeline
             void PlaybackSessionOnPlaybackStateChanged(MediaPlaybackSession sender, object args)
             {
                 controls.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal,
-                    () => controls.viewModel.IsPlaying /*= controls.prevIsPlaying*/ = sender.PlaybackState == MediaPlaybackState.Playing);
+                    () => controls.viewModel.IsPlaying = sender.PlaybackState == MediaPlaybackState.Playing);
             }
 
             void MediaPlayerOnIsMutedChanged(MediaPlayer sender, object args)
