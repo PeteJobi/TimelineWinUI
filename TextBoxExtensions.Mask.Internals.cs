@@ -19,6 +19,7 @@ public static partial class TextBoxExtensions
     private const char EscapeChar = '\\';
     private static readonly KeyValuePair<char, string> AlphaCharacterRepresentation = new KeyValuePair<char, string>('a', "[A-Za-z]");
     private static readonly KeyValuePair<char, string> NumericCharacterRepresentation = new KeyValuePair<char, string>('9', "[0-9]");
+    private static readonly KeyValuePair<char, string> OneToFiveNumericCharacterRepresentation = new KeyValuePair<char, string>('5', "[0-5]");
     private static readonly KeyValuePair<char, string> AlphaNumericRepresentation = new KeyValuePair<char, string>('*', "[A-Za-z0-9]");
 
     private static void InitTextBoxMask(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -31,7 +32,8 @@ public static partial class TextBoxExtensions
         textbox.Paste -= Textbox_Paste;
         textbox.Loaded -= Textbox_Loaded;
         textbox.GotFocus -= Textbox_GotFocus_Mask;
-        textbox.Loaded += Textbox_Loaded;
+        if (textbox.IsLoaded) Textbox_Loaded(textbox, null);
+        else textbox.Loaded += Textbox_Loaded;
     }
 
     private static void Textbox_Loaded(object sender, RoutedEventArgs e)
@@ -74,6 +76,7 @@ public static partial class TextBoxExtensions
             {
                 { AlphaCharacterRepresentation.Key, AlphaCharacterRepresentation.Value },
                 { NumericCharacterRepresentation.Key, NumericCharacterRepresentation.Value },
+                { OneToFiveNumericCharacterRepresentation.Key, OneToFiveNumericCharacterRepresentation.Value },
                 { AlphaNumericRepresentation.Key, AlphaNumericRepresentation.Value }
             };
 
