@@ -267,7 +267,7 @@ namespace Timeline
             MediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(e.NewValue);
         }
 
-        private void ProgressValue_OnValueChanged(TimespanTextBox sender, TimeSpan args)
+        private void ProgressValue_OnValueChanged(TimeSpanTextBox sender, TimeSpan args)
         {
             if (MediaPlayer == null) return;
             if (Math.Abs(args.TotalSeconds - prevPosition.TotalSeconds) < 0.01) return;

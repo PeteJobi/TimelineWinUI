@@ -22,12 +22,12 @@ using Windows.Foundation.Collections;
 
 namespace Timeline
 {
-    public sealed partial class TimespanTextBox : UserControl
+    public sealed partial class TimeSpanTextBox : UserControl
     {
         public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
             nameof(Minimum),
             typeof(TimeSpan),
-            typeof(TimespanTextBox),
+            typeof(TimeSpanTextBox),
             new PropertyMetadata(TimeSpan.Zero, OnMinimumChanged));
         public TimeSpan Minimum
         {
@@ -38,7 +38,7 @@ namespace Timeline
         public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(
             nameof(Maximum),
             typeof(TimeSpan),
-            typeof(TimespanTextBox),
+            typeof(TimeSpanTextBox),
             new PropertyMetadata(TimeSpan.MaxValue, OnMaximumChanged));
         public TimeSpan Maximum
         {
@@ -49,14 +49,14 @@ namespace Timeline
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
             nameof(Value),
             typeof(TimeSpan),
-            typeof(TimespanTextBox),
+            typeof(TimeSpanTextBox),
             new PropertyMetadata(TimeSpan.Zero, OnValueChanged));
         public TimeSpan Value
         {
             get => (TimeSpan)GetValue(ValueProperty);
             set => SetValue(ValueProperty, value);
         }
-        public event TypedEventHandler<TimespanTextBox, TimeSpan> ValueChanged;
+        public event TypedEventHandler<TimeSpanTextBox, TimeSpan> ValueChanged;
 
         public static readonly DependencyProperty IgnoreMaximumIfZeroProperty = DependencyProperty.Register(
             nameof(IgnoreMaximumIfZero),
@@ -92,7 +92,7 @@ namespace Timeline
             set => SetValue(DontShowFractionalSecondsProperty, value);
         }
 
-        public TimespanTextBox()
+        public TimeSpanTextBox()
         {
             InitializeComponent();
         }
@@ -111,20 +111,20 @@ namespace Timeline
 
         private static void OnMinimumChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var textBox = (TimespanTextBox)d;
+            var textBox = (TimeSpanTextBox)d;
             if (textBox.Value < textBox.Minimum) textBox.Value = textBox.Minimum;
             //e has e.NewValue and e.OldValue
         }
 
         private static void OnMaximumChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var textBox = (TimespanTextBox)d;
+            var textBox = (TimeSpanTextBox)d;
             if (textBox.Value > textBox.Maximum && (textBox.Maximum > TimeSpan.Zero || !textBox.IgnoreMaximumIfZero)) textBox.Value = textBox.Maximum;
         }
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var textBox = (TimespanTextBox)d;
+            var textBox = (TimeSpanTextBox)d;
             //Debug.WriteLine($"VC {textBox.Name} {textBox.Value}");
             if (textBox.Value < textBox.Minimum) textBox.Value = textBox.Minimum;
             else if (textBox.Value > textBox.Maximum && (textBox.Maximum > TimeSpan.Zero || !textBox.IgnoreMaximumIfZero)) textBox.Value = textBox.Maximum;

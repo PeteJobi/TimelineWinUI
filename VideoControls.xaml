@@ -46,7 +46,7 @@
                   Visibility="{x:Bind CurrentTimeEditable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
                 <TextBlock Name="ProgressText" VerticalAlignment="Center" HorizontalAlignment="Right"/>
             </Grid>
-            <timeline:TimespanTextBox x:Name="ProgressValue" VerticalAlignment="Center" Visibility="{x:Bind CurrentTimeEditable, Mode=OneWay}"
+                <timeline:TimeSpanTextBox x:Name="ProgressValue" VerticalAlignment="Center" Visibility="{x:Bind CurrentTimeEditable, Mode=OneWay}"
                                       ValueChanged="ProgressValue_OnValueChanged"
                                       DontShowFractionalSeconds="{x:Bind ShowFractionalSeconds, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
             <TextBlock Name="DurationText" VerticalAlignment="Center"/>
