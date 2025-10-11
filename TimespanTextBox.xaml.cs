@@ -54,31 +54,20 @@ namespace Timeline
         public TimeSpan Value
         {
             get => (TimeSpan)GetValue(ValueProperty);
-            set => SetValue(ValueProperty, value);
+            set => SetValueWithTextBoxCheck(ValueProperty, value);
         }
         public event TypedEventHandler<TimeSpanTextBox, TimeSpan> ValueChanged;
+        private bool valueIsZero;
 
         public static readonly DependencyProperty IgnoreMaximumIfZeroProperty = DependencyProperty.Register(
             nameof(IgnoreMaximumIfZero),
             typeof(bool),
             typeof(VideoControls),
-            new PropertyMetadata(true));
+            new PropertyMetadata(false));
         public bool IgnoreMaximumIfZero
         {
             get => (bool)GetValue(IgnoreMaximumIfZeroProperty);
             set => SetValue(IgnoreMaximumIfZeroProperty, value);
-        }
-
-        public static readonly DependencyProperty NoMaskProperty = DependencyProperty.Register(
-            nameof(NoMask),
-            typeof(bool),
-            typeof(TimespanTextBox),
-            new PropertyMetadata(false, OnMaskChanged));
-
-        public bool NoMask
-        {
-            get => (bool)GetValue(NoMaskProperty);
-            set => SetValue(NoMaskProperty, value);
         }
 
         public static readonly DependencyProperty DontShowFractionalSecondsProperty = DependencyProperty.Register(
@@ -107,6 +96,7 @@ namespace Timeline
             {
                 ((Grid)parentGrid).Children.Remove(delButton);
             }
+            SetMask(textBox, this);
         }
 
         private static void OnMinimumChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -131,23 +121,17 @@ namespace Timeline
             textBox.ValueChanged?.Invoke(textBox, textBox.Value);
         }
 
-        private static void OnMaskChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            SetMask(d);
-        }
-
         private static void OnDontShowFractionalSecondsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            SetMask(d);
+            var timespanTextBox = (TimeSpanTextBox)d;
+            var textBox = (TextBox)VisualTreeHelper.GetChild(d, 0);
+            SetMask(textBox, timespanTextBox);
         }
 
-        private static void SetMask(DependencyObject d)
+        private static void SetMask(TextBox textBox, TimeSpanTextBox timeSpanTextBox)
         {
-            var timespanTextBox = (TimespanTextBox)d;
-            var textBox = (TextBox)VisualTreeHelper.GetChild(d, 0);
-            //TextBoxExtensions.SetMask(textBox, timespanTextBox.NoMask ? null : timespanTextBox.DontShowFractionalSeconds ? "99:99:99" : "99:99:99.999");
-            if(timespanTextBox.NoMask) TextBoxExtensions.SetMask(textBox, null);
-            textBox.Text = TimeSpanToTextConverter.TimespanToTextFormat(timespanTextBox.Value, timespanTextBox.DontShowFractionalSeconds);
+            TextBoxExtensions.SetMask(textBox, timeSpanTextBox.DontShowFractionalSeconds ? "99:59:99" : "99:59:59.999");
+            textBox.Text = TimeSpanToTextConverter.TimespanToTextFormat(timeSpanTextBox.Value, timeSpanTextBox.DontShowFractionalSeconds);
         }
 
         public static DependencyObject? FindChildElementByName(DependencyObject tree, string sName)
@@ -162,6 +146,19 @@ namespace Timeline
                     return childInSubtree;
             }
             return null;
+        }
+
+        private void SetValueWithTextBoxCheck(DependencyProperty dp, object value)
+        {
+            //This is done because if the value is currently TimeSpan.Zero, and the user types in an invalid TimeSpan,
+            //the value remains TimeSpan.Zero, but the TextBox.Text still contains the invalid TimeSpan text
+            if (!valueIsZero && Value == TimeSpan.Zero && (TimeSpan)value == TimeSpan.Zero)
+            {
+                var textBox = (TextBox)VisualTreeHelper.GetChild(this, 0);
+                textBox.Text = TimeSpanToTextConverter.TimespanToTextFormat(TimeSpan.Zero, DontShowFractionalSeconds);
+                valueIsZero = true;
+            }else valueIsZero = false;
+            SetValue(dp, value);
         }
     }
 

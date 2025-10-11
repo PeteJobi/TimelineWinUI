@@ -7,16 +7,22 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:timeline="using:Timeline"
     xmlns:converters="using:CommunityToolkit.WinUI.Converters"
-    xmlns:winUi="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <timeline:TimeSpanToTextConverter x:Name="TimespanToTextConverter" DontShowFractionalSeconds="{x:Bind DontShowFractionalSeconds, Mode=OneWay}"/>
         <converters:BoolToObjectConverter x:Key="MinWidthConverter" TrueValue="70" FalseValue="100"/>
-        <converters:BoolToObjectConverter x:Key="MaskConverter" TrueValue="99:99:99" FalseValue="99:99:99.999"/>
     </UserControl.Resources>
 
     <TextBox Width="{x:Bind DontShowFractionalSeconds, Mode=OneWay, Converter={StaticResource MinWidthConverter}}" Loaded="Text_OnLoaded"
-             Text="{x:Bind Value, Mode=TwoWay, Converter={StaticResource TimespanToTextConverter}}"
-             winUi:TextBoxExtensions.Mask="{x:Bind DontShowFractionalSeconds, Mode=OneWay, Converter={StaticResource MaskConverter}}"/>
+             Text="{x:Bind Value, Mode=TwoWay, Converter={StaticResource TimespanToTextConverter}}"/>
+
+    <!--
+    Cannot use binding shown below because it resets the TextBox.Text to __:__:__ when DontShowFractionalSeconds changes
+    By instead setting it in code-behind, we can set the correct TextBox.Text value right after
+    
+    xmlns:winUi="using:CommunityToolkit.WinUI"
+    <converters:BoolToObjectConverter x:Key="MaskConverter" TrueValue="99:59:59" FalseValue="99:59:59.999"/>
+    winUi:TextBoxExtensions.Mask="{x:Bind DontShowFractionalSeconds, Mode=OneWay, Converter={StaticResource MaskConverter}}"
+    -->
 </UserControl>
