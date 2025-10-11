@@ -14,7 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
-using VideoSplitter;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Playback;
