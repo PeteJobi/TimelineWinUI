@@ -76,7 +76,7 @@ namespace Timeline
         private void PlaybackSessionOnNaturalDurationChanged(MediaPlaybackSession sender, object args)
         {
             if (sender.NaturalDuration == TimeSpan.Zero) return;
-            model.Duration = sender.NaturalDuration;
+            dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () => model.Duration = sender.NaturalDuration);
         }
 
         private async void PlaybackSessionOnPlaybackStateChanged(MediaPlaybackSession sender, object args)
@@ -102,9 +102,12 @@ namespace Timeline
 
         private void PlaybackSessionOnNaturalVideoSizeChanged(MediaPlaybackSession sender, object args)
         {
-            previewImageWidth = sender.NaturalVideoWidth / (double)sender.NaturalVideoHeight * ScenePreviewPanelHeight;
             if (model.Duration == TimeSpan.Zero) return;
-            dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () => _ = SetUpPreviews());
+            previewImageWidth = sender.NaturalVideoWidth / (double)sender.NaturalVideoHeight * ScenePreviewPanelHeight;
+            dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+            {
+                if (scenePreviewPanel?.Width > 0) _ = SetUpPreviews();
+            });
         }
 
         private void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -129,10 +132,10 @@ namespace Timeline
                     }
                     break;
                 case nameof(MediaViewModel.TimelineWidth):
-                    if (previewImageWidth != 0 && scenePreviewPanel != null)
+                    if (scenePreviewPanel != null)
                     {
                         scenePreviewPanel.Width = model.TimelineWidth;
-                        _ = SetUpPreviews();
+                        if(previewImageWidth != 0) _ = SetUpPreviews();
                     }
                     break;
             }
