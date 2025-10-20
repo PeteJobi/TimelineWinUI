@@ -184,10 +184,12 @@ namespace Timeline
             if(scenePreviewPanel == null) return;
             await StartProcess($"-ss {previewTimePoint} -i \"{videoPath}\" -frames:v 1 -vf scale=w=-1:h={ScenePreviewPanelHeight} \"{outputFolder}{index}.png\"", token);
             if (token.IsCancellationRequested) return;
-            var image = new Image();
-            image.Name = index.ToString();
-            image.Source = new BitmapImage(new Uri($"{outputFolder}{index}.png"));
-            image.Stretch = Stretch.Uniform;
+            var image = new Image
+            {
+                Name = index.ToString(),
+                Source = new BitmapImage(new Uri($"{outputFolder}{index}.png")),
+                Stretch = Stretch.Uniform
+            };
             scenePreviewPanel.Children.Add(image);
         }
 
