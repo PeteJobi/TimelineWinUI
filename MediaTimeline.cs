@@ -43,6 +43,7 @@ namespace Timeline
 
             if (!string.IsNullOrWhiteSpace(ffmpegPath) && !string.IsNullOrWhiteSpace(videoPath))
             {
+                SetPreviewImageWidth(mediaPlayer.PlaybackSession);
                 mediaPlayer.PlaybackSession.NaturalVideoSizeChanged += PlaybackSessionOnNaturalVideoSizeChanged;
                 ffmpegProcess = new Process
                 {
@@ -103,7 +104,7 @@ namespace Timeline
         private void PlaybackSessionOnNaturalVideoSizeChanged(MediaPlaybackSession sender, object args)
         {
             if (model.Duration == TimeSpan.Zero) return;
-            previewImageWidth = sender.NaturalVideoWidth / (double)sender.NaturalVideoHeight * ScenePreviewPanelHeight;
+            SetPreviewImageWidth(sender);
             dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () =>
             {
                 if (scenePreviewPanel?.Width > 0) _ = SetUpPreviews();
@@ -192,6 +193,8 @@ namespace Timeline
             };
             scenePreviewPanel.Children.Add(image);
         }
+
+        private void SetPreviewImageWidth(MediaPlaybackSession session) => previewImageWidth = session.NaturalVideoWidth / (double)session.NaturalVideoHeight * ScenePreviewPanelHeight;
 
         private static async Task DeletePreviewFolder(string previewFolder, CancellationToken token)
         {
