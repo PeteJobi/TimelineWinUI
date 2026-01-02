@@ -11,21 +11,11 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)MediaTimeline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BaseTimeline.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TextBoxExtensions.Mask.Internals.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TextBoxExtensions.Mask.Properties.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TimeSpanTextBox.xaml.cs">
-      <DependentUpon>TimeSpanTextBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)VideoControls.xaml.cs">
       <DependentUpon>VideoControls.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)TimeSpanTextBox.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)VideoControls.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
